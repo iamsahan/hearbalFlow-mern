@@ -15,8 +15,10 @@ import {
   getDownloadURL,
 } from "firebase/storage";
 import { app } from "../firebase.js";
+import { useNavigate } from "react-router-dom";
 
 export const AddInventory = () => {
+  const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [isSidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [itemId, setItemId] = useState("");
@@ -42,6 +44,7 @@ export const AddInventory = () => {
   const [loading, setLoading] = useState(false);
 
   const storage = getStorage(app);
+  const getTodayDate = new Date().toISOString().split("T")[0];
 
   const generateItemId = () => {
     const id = `ITM${Math.floor(Math.random() * 1000)
@@ -53,6 +56,19 @@ export const AddInventory = () => {
   useEffect(() => {
     generateItemId();
   }, []);
+
+  const countWords = (text) => {
+    return text.trim().split(/\s+/).length;
+  };
+
+  const handleDescriptionChange = (e) => {
+    const value = e.target.value;
+    if (countWords(value) <= 50) {
+      setDescription(value);
+    }
+  };
+
+  const remainingWords = 50 - countWords(description);
 
   const MaterialUISwitch = styled(Switch)(({ theme }) => ({
     width: 62,
@@ -174,6 +190,7 @@ export const AddInventory = () => {
       );
       Swal.fire("Good job!", "New Item Successfully Saved!", "success");
       console.log(resquestBody);
+      navigate("/dash");
     } catch (error) {
       console.log(error);
       Swal.fire("URL Error", "Error Adding New Item", "error");
@@ -261,6 +278,7 @@ export const AddInventory = () => {
                     <input
                       type="date"
                       name="mfd"
+                      max={getTodayDate}
                       value={mfd}
                       onChange={(e) => setMfd(e.target.value)}
                       className="border border-gray-300 rounded-md p-2 bg-gray-100 mr-10"
@@ -272,6 +290,7 @@ export const AddInventory = () => {
                     <input
                       type="date"
                       name="exp"
+                      min={getTodayDate}
                       value={exp}
                       onChange={(e) => setExp(e.target.value)}
                       className="border border-gray-300 rounded-md p-2 bg-gray-100 mr-10"
@@ -287,7 +306,7 @@ export const AddInventory = () => {
                       name="price"
                       value={price}
                       onChange={(e) => setPrice(e.target.value)}
-                      className="border border-gray-300 rounded-md p-2 bg-gray-100"
+                      className="border border-gray-300 rounded-md p-2 bg-gray-100 mr-10"
                       required
                     />
                   </div>
@@ -313,10 +332,13 @@ export const AddInventory = () => {
                   <textarea
                     name="description"
                     value={description}
-                    onChange={(e) => setDescription(e.target.value)}
+                    onChange={handleDescriptionChange}
                     className="border border-gray-300 rounded-md p-2 w-full bg-gray-100"
                     required
                   />
+                  <div className="text-gray-500 mt-1">
+                    Remaining words: {remainingWords}
+                  </div>
                 </div>
 
                 <div className="mb-4">
@@ -325,7 +347,7 @@ export const AddInventory = () => {
                     type="file"
                     name="image"
                     onChange={(e) => setImage(e.target.files[0])}
-                    className="border border-gray-300 rounded-md p-2 w-full"
+                    className="border border-none rounded-md p-2 "
                   />
                   {uploadProgress > 0 && (
                     <div className="w-full max-w-sm mt-4">
@@ -361,10 +383,12 @@ export const AddInventory = () => {
                     {loading ? "Uploading..." : "Upload"}
                   </button>
                 </div>
+              </div>
+              <div className="flex justify-center">
                 <button
                   type="button"
                   onClick={nextStep}
-                  className="bg-blue-500 text-white p-2 rounded-md"
+                  className="bg-lime-500 text-black text-xl px-4 py-2 rounded-md mt-5 mb-10"
                 >
                   Next
                 </button>
@@ -420,6 +444,12 @@ export const AddInventory = () => {
                       className="border border-gray-300 rounded-md p-2 bg-gray-100"
                       required
                     />
+                    {!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(supEmail) &&
+                      supEmail && (
+                        <p className="text-red-500 text-xs mt-1">
+                          Please enter a valid email address.
+                        </p>
+                      )}
                   </div>
                 </div>
 
@@ -449,22 +479,29 @@ export const AddInventory = () => {
                       className="border border-gray-300 rounded-md p-2 bg-gray-100"
                       required
                     />
+                    {!/^[0-9]{10}$/.test(supPhone) && supPhone && (
+                      <p className="text-red-500 text-xs mt-1">
+                        Please enter a valid phone no.
+                      </p>
+                    )}
                   </div>
                 </div>
 
-                <button
-                  type="button"
-                  onClick={prevStep}
-                  className="bg-gray-500 text-white p-2 rounded-md mr-4"
-                >
-                  Previous
-                </button>
                 <button
                   type="button"
                   className="bg-blue-500 text-white p-2 rounded-md"
                   onClick={handleSubmit}
                 >
                   Submit
+                </button>
+              </div>
+              <div className="flex justify-center">
+                <button
+                  type="button"
+                  onClick={prevStep}
+                  className="bg-pink-600 text-black text-xl px-4 py-2 rounded-md mt-5 mb-10 mr-10"
+                >
+                  Back
                 </button>
               </div>
             </form>
