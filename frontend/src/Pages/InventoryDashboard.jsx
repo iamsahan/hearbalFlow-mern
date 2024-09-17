@@ -12,8 +12,10 @@ import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
 import Modal from "react-modal";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import InventoryReport from "./InventoryReport";
+import { useNavigate } from "react-router-dom";
 
 const InventoryDashboard = () => {
+  const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [isSidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [items, setItems] = useState([]); // To store fetched items
@@ -159,7 +161,7 @@ const InventoryDashboard = () => {
     try {
       const result = await Swal.fire({
         title: "Are you sure?",
-        text: "You will not be able to recover this Estimate Log",
+        text: "You will not be able to recover Item",
         icon: "warning",
         fontFamily: "Montserrat, sans-serif",
         showCancelButton: true,
@@ -171,15 +173,11 @@ const InventoryDashboard = () => {
       if (result.isConfirmed) {
         await axios.delete(`http://localhost:3000/api/item/delete/${id}`);
         setItems(items.filter((rep) => rep._id !== id));
-        Swal.fire("Deleted!", "The Estimate Log has been deleted.", "success");
+        Swal.fire("Deleted!", "The Item has been deleted.", "success");
       }
     } catch (error) {
-      console.error("Error deleting Estimate Log:", error);
-      Swal.fire(
-        "Error",
-        "An error occurred while deleting the Estimate Log.",
-        "error"
-      );
+      console.error("Error deleting Item:", error);
+      Swal.fire("Error", "An error occurred while deleting the Item.", "error");
     }
   };
 
@@ -207,10 +205,12 @@ const InventoryDashboard = () => {
         `http://localhost:3000/api/item/update/${selectedItem._id}`,
         requestBody
       );
-
+      Swal.fire("Updated!", "The Item has been updated.", "success");
+      window.location.reload();
       console.log(requestBody);
     } catch (error) {
       console.log(error);
+      Swal.fire("Error", "An error occurred while updatingthe Item.", "error");
     }
   };
 
