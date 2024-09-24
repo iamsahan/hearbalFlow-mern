@@ -296,6 +296,13 @@ export const AddInventory = () => {
                       className="border border-gray-300 rounded-md p-2 bg-gray-100 mr-10"
                       required
                     />
+                    {mfd >= exp ? (
+                      <p className="text-red-500 text-xs mt-1">
+                        EXP should grater than to MFD
+                      </p>
+                    ) : (
+                      ""
+                    )}
                   </div>
                   <div className="flex flex-col w-1/4">
                     <label className="block text-gray-700 required">

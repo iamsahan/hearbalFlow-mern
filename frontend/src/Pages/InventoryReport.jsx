@@ -10,10 +10,8 @@ const InventoryReport = ({ packages }) => {
       <Page size="A4" style={styles.page}>
         {/* Header Section */}
         <View style={styles.header}>
-          <Text style={styles.centerText}>
-            Mr Automative Service Center, Gampaha
-          </Text>
-          <Text style={styles.centerText}>Package Report</Text>
+          <Text style={styles.centerText}>Hearbal Flow Aurwedaha Products</Text>
+          <Text style={styles.centerText}>Inventory Report</Text>
           <Text style={styles.centerText}>
             Report Generated Date: {currentDate}
           </Text>
@@ -21,7 +19,7 @@ const InventoryReport = ({ packages }) => {
 
         {/* Table Header */}
         <View style={styles.tableHeader}>
-          <Text style={styles.tableHeaderText}>Package Name</Text>
+          <Text style={styles.tableHeaderText}>Product Name</Text>
           <Text style={styles.tableHeaderText}>Price</Text>
           <Text style={styles.tableHeaderText}>Services Included</Text>
         </View>
